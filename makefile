@@ -26,8 +26,9 @@ vpath %.exec coverage
 	$(JAVAC)  $(JFLAGS)  $<
 
 #default rule - will be invoked by make
-all: SimulatorOne.class \
-				Node.class \
+all: PriorityQueue.class \
+				Graph.class \
+				SimulatorOne.class \
 
 
 # Rule for generating documentation
@@ -36,8 +37,8 @@ doc:
 
 #Rules for executing applications
 
-Main:
-	test.txt > java -cp ./bin Main
+Main: all
+	java -cp ./bin SimulatorOne < test.txt
 
 
 #Self-defined
