@@ -40,6 +40,8 @@ doc:
 Main: all
 	java -cp ./bin SimulatorOne < test.txt
 
+Test: all
+	java -cp ./bin Graph
 
 #Self-defined
 

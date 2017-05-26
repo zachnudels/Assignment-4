@@ -22,11 +22,19 @@ public class SimulatorOne{
 
     // Add destination nodes to each node
     for(int j=0 ;j<verts.size();j++){
-      String text = (lines.get(j+1)).substring(1)+" ";
+      // System.out.println();
+      // System.out.println(j);
+      int cut = 1;
+      if (j>9)
+        cut=2;
+      String text = (lines.get(j+1)).substring(cut)+" ";
       while(!text.equals(" ")){
         // slice ' ' off
-        text=text.substring(1);
+        // System.out.println(text);
+          text=text.substring(1);
+        // System.out.println(text);
         // save first int - i of node
+        // System.out.println(text);
         int vertI = Integer.parseInt(text.substring(0,text.indexOf(' ')));
         // slice i off
         text = text.substring((text.indexOf(' '))+1);
@@ -61,6 +69,7 @@ public class SimulatorOne{
 // Find Victims
 
     String vics = " "+lines.get(verts.size()+4)+ " ";
+    // System.out.println(vics);
     // int[] costs = new int[hospitals.size()];
     while(!vics.equals(" ")){
       // slice ' ' off
@@ -69,8 +78,10 @@ public class SimulatorOne{
       int vicsI = Integer.parseInt(vics.substring(0,vics.indexOf(' ')));
       // slice off index
       vics=vics.substring(vics.indexOf(' '));
+      g.victim(vicsI);
 
       System.out.println("victim "+vicsI);
+      // System.out.println(verts.get(vicsI)+".victim: "+verts.get(vicsI).victim);
 
 
 // Find costs of shortest round paths from each hospital to victim vicsI
@@ -108,10 +119,10 @@ public class SimulatorOne{
       if(bestPaths.isEmpty())
         System.out.println("cannot be helped");
 
-// Print all paths in bestpaths arraylist 
+// Print all paths in bestpaths arraylist
       for(Integer spath: bestPaths){
         System.out.println("hospital "+ spath);
-        g.printPath(vicsI,spath);
+        g.printPath(vicsI,spath, bestPath);
       }
 
     }
