@@ -66,7 +66,7 @@ class GraphException extends RuntimeException
 
       public void reset( )
       //  { dist = Graph.INFINITY; prev = null; pos = null; scratch = 0; }
-      { dist = Graph.INFINITY; prev = null; scratch = 0; }
+      { dist = Graph.INFINITY; prev = null; scratch = 0; unique=true;}
 
      public String toString(){
           return this.name;
@@ -118,207 +118,83 @@ public class Graph{
 		 return false;
 
 
-
 	 }
 
-	 public boolean checkMultiple(String startName, String victimName, double bestPath)
-		{
-		  // System.out.println(startName);
-			boolean rtn = false;
-			ArrayList<Double> paths = new ArrayList<Double>();
+	 public boolean checkMultiple(String startName, String victimName){
+		 return checkIfMultiple(startName, victimName) || checkIfMultiple(victimName, startName);
+	 }
 
-				PriorityQueue<Path> pq = new PriorityQueue<Path>( );
+	 public boolean checkIfMultiple(String startName, String victimName)
+	 {
+		 boolean rtn = false;
+		 PriorityQueue<Path> pq = new PriorityQueue<Path>( );
 
-				Vertex hosp = vertexMap.get( startName );
-				Vertex vic = vertexMap.get(victimName);
+		 Vertex start = vertexMap.get( startName );
+		 if( start == null )
+				 throw new NoSuchElementException( "Start vertex not found" );
 
-				if( hosp == null )
-						throw new NoSuchElementException( "Start vertex not found" );
+		 clearAll( );
+		 pq.add( new Path( start, 0 ) ); start.dist=0;
 
-				clearAll( );
-				pq.add( new Path( hosp, 0 ) ); hosp.dist = 0;
-			 //  System.out.println("Check");
-				int best = 0;
-				while( !pq.isEmpty( ) )//&& nodesSeen < vertexMap.size( ) )
-				{
-						Path vrec = pq.remove( );
-						Vertex v = vrec.dest;
-						// System.out.println("Vert v: "+v.name);
-					 //  if( v.scratch != 0 )  // already processed v
-							 //  continue;
+		 int nodesSeen = 0;
+		 while( !pq.isEmpty( ) && nodesSeen < vertexMap.size( ) )
+		 {
+				 Path vrec = pq.remove( );
+				 Vertex v = vrec.dest;
+				 if( v.scratch != 0 )  // already processed v
+						 continue;
 
-					 //  v.scratch = 1;
-					 //  nodesSeen++;
-					 // System.out.println("Check");
-						for( Edge e : v.adj )
-						{
-								Vertex w = e.dest;
-								double cvw = e.cost;
+				 v.scratch = 1;
+				 nodesSeen++;
 
-								if( cvw < 0 )
-										throw new GraphException( "Graph has negative edges" );
+				 for( Edge e : v.adj )
+				 {
+						 Vertex w = e.dest;
+						 double cvw = e.cost;
 
-								if( w.dist > v.dist + cvw || w.dist ==0 || w.dist==(v.dist+cvw) )
-								{
-										w.dist = v.dist +cvw;
-										w.prev = v;
-										pq.add( new Path( w, w.dist ) );
-								}
-								// System.out.println("W: "+w.name);
-								// System.out.println("w.prev: "+w.prev.name);
-								if (w.name.equals(startName) && !w.prev.prev.name.equals(w.name)){
-									// System.out.println("w.name is A");
-									 if(doesContain(startName, victimName)){
-									double y = v.dist+cvw;
-									if(y==bestPath){
-										best++;
-										System.out.println("W.path: "+w.name+w.prev.name+w.prev.prev.name+w.prev.prev.prev.name+w.prev.prev.prev.name+w.prev.prev.prev.prev.name+w.prev.prev.prev.prev.prev.name);
-									}
+						 if( cvw < 0 )
+								 throw new GraphException( "Graph has negative edges" );
+								//  if(victimName.equals("13")&&startName.equals("26")){
+								// 	 if(w.name.equals(victimName)){
+								// 		  // System.out.println(w.unique);
+								// 		 if(w.dist==v.dist+cvw){
+								// 			 w.unique=false;
+								// 			 System.out.println("Equal: "+w.dist);
+								// 		 }else if(w.dist>v.dist+cvw){
+								// 			 w.unique=true;
+								// 			 System.out.println("Less: "+w.dist+", Other cost: "+(v.dist+cvw));
+								// 		 }
+								// 		//  System.out.println(w.unique+" "+rtn);
+								// 	 }
+								//  }
+						 if(w.name.equals(victimName)){
+							 if(w.dist==v.dist+cvw)
+								 w.unique=false;
+							 else if(w.dist>v.dist+cvw)
+								 w.unique=true;
+						 }
+						//  if(victimName.equals("25")&&startName.equals("24")&&w.name.equals(victimName)){
+						// 	//  System.out.println(w.unique+" "+rtn);
+						//  }
 
-									}
-							} }
-					}
+						 if(( w.dist > v.dist + cvw))
+						 {
+
+								 w.dist = v.dist +cvw;
+								 w.prev = v;
+								 pq.add( new Path( w, w.dist ) );
+						 }
 
 
-				if (best>1){
-					System.out.println(best);
-					rtn=true;
-				}
-			 //  System.out.println("CheckMultiple End "+rtn);
-				return rtn;
-			 // if (best>1){
-			 // 	rtn=true;
-			 // }
-			 // return rtn;
-		}
-
-	//  public boolean checkMultiple(String startName, String victimName, double bestPath)
-	// 	 {
-	// 		//  System.out.println(startName);
-	// 		 boolean rtn = false;
-	// 		 ArrayList<Double> vicPaths = new ArrayList<Double>();
-	// 		 ArrayList<Double> hosPaths = new ArrayList<Double>();
-	// 			 PriorityQueue<Path> pq = new PriorityQueue<Path>( );
-	// 			 PriorityQueue<Path> pq1 = new PriorityQueue<Path>();
-	 //
-	// 			 Vertex hosp = vertexMap.get( startName );
-	// 			 Vertex vic = vertexMap.get(victimName);
-	 //
-	// 			 if( hosp == null )
-	// 					 throw new NoSuchElementException( "Start vertex not found" );
-	 //
-	// 			 clearAll( );
-	// 			 pq.add( new Path( hosp, 0 ) ); hosp.dist = 0;
-	// 			//  System.out.println("Check");
-	// 			 int best = 0;
-	// 			 while( !pq.isEmpty( ) )//&& nodesSeen < vertexMap.size( ) )
-	// 			 {
-	// 					 Path vrec = pq.remove( );
-	// 					 Vertex v = vrec.dest;
-	// 					//  if( v.scratch != 0 )  // already processed v
-	// 							//  continue;
-	 //
-	// 					//  v.scratch = 1;
-	// 					//  nodesSeen++;
-	// 					// System.out.println("Check");
-	// 					 for( Edge e : v.adj )
-	// 					 {
-	// 							 Vertex w = e.dest;
-	// 							 double cvw = e.cost;
-	 //
-	// 							 if( cvw < 0 )
-	// 									 throw new GraphException( "Graph has negative edges" );
-	 //
-	// 							//  if( w.dist > v.dist + cvw )
-	// 							//  {
-	// 							// 		 w.dist = v.dist +cvw;
-	// 							// 		 w.prev = v;
-	// 							// 		 pq.add( new Path( w, w.dist ) );
-	// 							//  }
-	// 							pq.add( new Path( w, w.dist ) );
-	// 							 if (w.name.equals(victimName)){
-	// 								 double y = v.dist+cvw;
-	// 								 vicPaths.add(y);
-	// 								 pq.add( new Path( w, w.dist ) );
-	// 								//  if (w.dist==bestPath)
- // 								// 		best++;
- // 								// 	 if (w.dist == v.dist+cvw){
- // 								// 		 rtn = true;
- // 								// 		//  System.out.println("true");
- // 								// 	 }
- // 								// 	 if ((w.dist < v.dist+cvw) || (w.dist>v.dist+cvw))
- // 								// 	 	rtn=false;
-	 //
- // 								 }
- // 						 }
- // 				 }
-	 //
-	// 			clearAll( );
-	// 			pq1.add( new Path( vic, 0 ) ); vic.dist = 0;
-	 //
-	// 			int best1 = 0;
-	// 			while( !pq1.isEmpty( ) )//&& nodesSeen < vertexMap.size( ) )
-	// 			{
-	// 					Path vrec1 = pq1.remove( );
-	// 					Vertex v1 = vrec1.dest;
-	// 				 //  if( v.scratch != 0 )  // already processed v
-	// 						 //  continue;
-	 //
-	// 				 //  v.scratch = 1;
-	// 				 //  nodesSeen++;
-	 //
-	// 					for( Edge e1 : v1.adj )
-	// 					{
-	// 							Vertex w1 = e1.dest;
-	// 							double cvw1 = e1.cost;
-	 //
-	// 							if( cvw1 < 0 )
-	// 									throw new GraphException( "Graph has negative edges" );
-	 //
-	// 							// if( w1.dist > v1.dist + cvw1 )
-	// 							// {
-	// 							// 		w1.dist = v1.dist +cvw1;
-	// 							// 		w1.prev = v1;
-	// 							// 		pq1.add( new Path( w1, w1.dist ) );
-	// 							// }
-	// 							pq1.add( new Path( w1, w1.dist ) );
-	// 							if (w1.name.equals(startName)){
-	// 								double x = v1.dist+cvw1;
-	// 								hosPaths.add(x);
-	// 						 }
-	// 				 }
-	// 		 }
-	// 		//  System.out.println(hosPaths.size());
-	// 		 for (int i = 0; i<hosPaths.size();i++){
-	 //
-	// 			 for (int j = 0; j< vicPaths.size();j++){
-	// 				 double pathCheck = hosPaths.get(i)+vicPaths.get(j);
-	// 				//  System.out.println(hosPaths.get(i)+vicPaths.get(j));
-	// 				 if (pathCheck==bestPath){
-	// 					//  System.out.println(pathCheck);
-	// 					 best++;
-	// 				 }
-	// 			 }
-	// 		 }
-	 //
-	 //
-	 //
-	 //
-	 //
-	 //
-	 //
-	 //
-	// 			 if (best>1){
-	// 				//  System.out.println(best);
-	// 				 rtn=true;
-	// 			 }
-	// 			//  System.out.println("CheckMultiple End "+rtn);
-	// 			 return rtn;
-	// 			// if (best>1){
-	// 			// 	rtn=true;
-	// 			// }
-	// 			// return rtn;
-	// 	 }
+				 }
+		 }
+		 if(getVertex(victimName).unique==false)
+			 rtn=true;
+		//  if(victimName.equals("25")&&startName.equals("24")){
+		// 		System.out.println(rtn);
+		// 	}
+		 return rtn;
+ }
 
 
    /**
@@ -339,14 +215,17 @@ public class Graph{
 				//  System.out.println(destName+sourceName);
 				 Vertex w = vertexMap.get( destName );
 				 Vertex v = vertexMap.get( sourceName );
-
-         if (checkMultiple(sourceName, destName, bestPath)){
+				 boolean check = checkMultiple(sourceName, destName);
+				//  if(destName.equals("25")&&sourceName.equals("24")){
+				// 	 System.out.println(check);
+				//  }
+         if (check){
 				 System.out.println("multiple solutions");
 					 dijkstra(source);
 					 Double path = w.dist;
 					 dijkstra(dest);
 					 path = path+v.dist;
-					 System.out.println("multiple solutions cost "+bestPath);
+					 System.out.println("multiple solutions cost "+(int)bestPath);
 					 return;
 				 }
 				 dijkstra(source);
