@@ -104,17 +104,17 @@ public class Graph{
 		//  System.out.println("Does contain starts");
 
 		 if(w.prev==null || w.prev.name.equals(start) ){
-			 System.out.println("Check");
+			//  System.out.println("Check");
 				 return false;}
 
-		 if (!w.prev.name.equals(dest) && !w.prev.name.equals(start)){
-			 System.out.println(w.prev.name);
+		 if (!w.prev.name.equals(dest) && !w.name.equals(start)){
+			//  System.out.println(w.prev.name);
 			 doesContain(w.prev.name, dest);
 		 }
 		 if(w.prev.name.equals(dest))
 			 return true;
 
-		 System.out.println("check");
+		//  System.out.println("check");
 		 return false;
 
 
@@ -123,7 +123,7 @@ public class Graph{
 
 	 public boolean checkMultiple(String startName, String victimName, double bestPath)
 		{
-		 //  System.out.println(startName);
+		  // System.out.println(startName);
 			boolean rtn = false;
 			ArrayList<Double> paths = new ArrayList<Double>();
 
@@ -143,6 +143,7 @@ public class Graph{
 				{
 						Path vrec = pq.remove( );
 						Vertex v = vrec.dest;
+						// System.out.println("Vert v: "+v.name);
 					 //  if( v.scratch != 0 )  // already processed v
 							 //  continue;
 
@@ -163,22 +164,21 @@ public class Graph{
 										w.prev = v;
 										pq.add( new Path( w, w.dist ) );
 								}
-								// System.out.println(w.name);
-								// System.out.println(w.prev.name);
-								if (w.name.equals(startName)){
+								// System.out.println("W: "+w.name);
+								// System.out.println("w.prev: "+w.prev.name);
+								if (w.name.equals(startName) && !w.prev.prev.name.equals(w.name)){
 									// System.out.println("w.name is A");
 									 if(doesContain(startName, victimName)){
 									double y = v.dist+cvw;
-									paths.add(y);
+									if(y==bestPath){
+										best++;
+										System.out.println("W.path: "+w.name+w.prev.name+w.prev.prev.name+w.prev.prev.prev.name+w.prev.prev.prev.name+w.prev.prev.prev.prev.name+w.prev.prev.prev.prev.prev.name);
+									}
 
 									}
 							} }
 					}
 
-					for(Double d: paths){
-						if (d==bestPath)
-						 best++;
-					}
 
 				if (best>1){
 					System.out.println(best);
@@ -333,8 +333,10 @@ public class Graph{
             System.out.println(dest);
             return;
          }
+
          String destName = Integer.toString(dest);
          String sourceName = Integer.toString(source);
+				//  System.out.println(destName+sourceName);
 				 Vertex w = vertexMap.get( destName );
 				 Vertex v = vertexMap.get( sourceName );
 
@@ -405,13 +407,15 @@ public class Graph{
 	 private void printDestPath( Vertex dest )
   {
 
-      if( dest.prev != null )
+      if( dest.prev != null  )
       {
           printDestPath( dest.prev );
           System.out.print( " " );
       }
       System.out.print( dest.name );
   }
+
+
 
    /**
    * Recursive routine to print shortest path to dest

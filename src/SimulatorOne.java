@@ -122,7 +122,7 @@ public class SimulatorOne{
 // Print all paths in bestpaths arraylist
       for(Integer spath: bestPaths){
         System.out.println("hospital "+ spath);
-        g.printPath(vicsI,spath, bestPath);
+        g.printPath(vicsI,spath,bestPath);
       }
 
     }
