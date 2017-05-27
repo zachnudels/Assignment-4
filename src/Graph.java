@@ -61,6 +61,7 @@ class GraphException extends RuntimeException
     	public boolean       hospital; //Hospital or not
 			public boolean unique;
       public Hospital hosp;
+      public Ambulance ambu;
 
       public Vertex( String nm )
         { name = nm; adj = new LinkedList<Edge>( ); reset( ); victim=false;}

@@ -2,7 +2,7 @@ public class Hospital{
   String type;
   String name;
   Vertex node;
-  int ambus;
+  // ArrayList<Ambulance> ambus;
   int beds = 13;
   boolean full;
   boolean priva=false;
@@ -13,15 +13,17 @@ public class Hospital{
     this.name=type+Integer.toString(num);
     if (type.equals("Life")|| type.equals("MediClinic")||type.equals("NetCare"))
       priva=true;
-    if(priva){
-      if (type.equals("NetCare"))
-        ambus=3;
-      else
-        ambus=2;
-    }
-    else{
-      ambus=2;
-
-    }
+    // if(priva){
+    //   if (type.equals("NetCare"))
+    //     for(int i=0;i<3;i++){
+    //       ambus.add(new Ambulance(type));
+    //     }
+    //   else
+    //     ambus=2;
+    // }
+    // else{
+    //   ambus=2;
+    //
+    // }
   }
 }

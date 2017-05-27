@@ -2,9 +2,11 @@ import java.util.*;
 public class GraphGenerator{
   Graph g;
   Random rnd = new Random();
+  int size;
 
 
   public GraphGenerator(int n)  {
+    this.size=n;
     g = new Graph();
     // 1. Add edges
     for (int i=0; i<n; i++){
@@ -23,8 +25,15 @@ public class GraphGenerator{
       hospitals.get(k).node=g.getVertex1(nd);
     }
     // 3. Set ambulances around the graph at random nodes
-
+    ArrayList<Ambulance> ambulances = genAmbus();
+    for (int l =0;l<32;l++){
+      int nd1 = rnd.nextInt(n);
+      g.getVertex1(nd1).ambu=ambulances.get(l);
+      ambulances.get(l).node=g.getVertex1(nd1);
+    }
   }
+
+
 
   public ArrayList<Hospital> genHosps(){
     ArrayList<Hospital> hosies = new ArrayList<Hospital>();
@@ -41,6 +50,22 @@ public class GraphGenerator{
       hosies.add(new Hospital("Public",l));
     }
     return hosies;
+  }
+
+  public ArrayList<Ambulance> genAmbus(){
+    ArrayList<Ambulance> ambus = new ArrayList<Ambulance>();
+    ambus.addAll(genAmbus("Life", 5));
+    ambus.addAll(genAmbus("MediClinic", 8));
+    ambus.addAll(genAmbus("NetCare", 15));
+    ambus.addAll(genAmbus("Public", 4));
+    return ambus;
+  }
+  public Collection<Ambulance> genAmbus(String type, int n){
+    Collection<Ambulance> ambus = new ArrayList<Ambulance>();
+    for(int i=0;i<n;i++){
+      ambus.add(new Ambulance(type));
+    }
+    return ambus;
   }
 
   public int random(int j, int n){
