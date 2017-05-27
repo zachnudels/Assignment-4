@@ -60,6 +60,7 @@ class GraphException extends RuntimeException
       public boolean          victim;  //Victim #
     	public boolean       hospital; //Hospital or not
 			public boolean unique;
+      public Hospital hosp;
 
       public Vertex( String nm )
         { name = nm; adj = new LinkedList<Edge>( ); reset( ); victim=false;}
@@ -93,32 +94,25 @@ public class Graph{
       (vertexMap.get(vertName)).victim = true;
    }
 
+	 public int edges(){
+		 Collection<Vertex> vees = new ArrayList<Vertex>(vertexMap.size());
+		 vees = vertexMap.values();
+		 int count =0;
+		 for (Vertex v: vees){
+			 for (Edge e : v.adj){
+				 count++;
+			 }
+		 }
+		 return count;
+	 }
+
 
 	 public boolean isVictim(String name){
 		 Vertex v = vertexMap.get(name);
 			 return v.victim;
 
 	 }
-	 public boolean doesContain(String start, String dest){
-		 Vertex w = vertexMap.get(start);
-		//  System.out.println("Does contain starts");
 
-		 if(w.prev==null || w.prev.name.equals(start) ){
-			//  System.out.println("Check");
-				 return false;}
-
-		 if (!w.prev.name.equals(dest) && !w.name.equals(start)){
-			//  System.out.println(w.prev.name);
-			 doesContain(w.prev.name, dest);
-		 }
-		 if(w.prev.name.equals(dest))
-			 return true;
-
-		//  System.out.println("check");
-		 return false;
-
-
-	 }
 
 	 public boolean checkMultiple(String startName, String victimName){
 		 return checkIfMultiple(startName, victimName) || checkIfMultiple(victimName, startName);

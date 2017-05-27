@@ -26,9 +26,11 @@ vpath %.exec coverage
 	$(JAVAC)  $(JFLAGS)  $<
 
 #default rule - will be invoked by make
-all: PriorityQueue.class \
-				Graph.class \
+all: Graph.class \
 				SimulatorOne.class \
+				Hospital.class \
+				GraphGenerator.class \
+				SimulatorTwo.class \
 
 
 # Rule for generating documentation
@@ -37,8 +39,11 @@ doc:
 
 #Rules for executing applications
 
-Main: all
+One: all
 	java -cp ./bin SimulatorOne < test.txt
+
+Two: all
+	java -cp ./bin SimulatorTwo
 
 Test: all
 	java -cp ./bin Graph
