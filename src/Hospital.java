@@ -1,29 +1,21 @@
+import java.util.*;
 public class Hospital{
   String type;
   String name;
   Vertex node;
-  // ArrayList<Ambulance> ambus;
-  int beds = 13;
-  boolean full;
+  int capacity = 13;
+  int beds;
+  boolean full=false;
   boolean priva=false;
 
-
-  public Hospital(String type, int num){
+  public Hospital(String type){
     this.type=type;
-    this.name=type+Integer.toString(num);
-    if (type.equals("Life")|| type.equals("MediClinic")||type.equals("NetCare"))
+    if (type.equals("Private"))
       priva=true;
-    // if(priva){
-    //   if (type.equals("NetCare"))
-    //     for(int i=0;i<3;i++){
-    //       ambus.add(new Ambulance(type));
-    //     }
-    //   else
-    //     ambus=2;
-    // }
-    // else{
-    //   ambus=2;
-    //
-    // }
+  }
+
+  public void update(){
+    if(beds==capacity)
+      full=true;
   }
 }

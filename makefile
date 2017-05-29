@@ -28,7 +28,10 @@ vpath %.exec coverage
 #default rule - will be invoked by make
 all: Graph.class \
 				SimulatorOne.class \
+				Trip.class \
+				Victim.class \
 				Hospital.class \
+				Ambulance.class \
 				GraphGenerator.class \
 				SimulatorTwo.class \
 

@@ -39,7 +39,7 @@ public class SimulatorOne{
         // slice i off
         text = text.substring((text.indexOf(' '))+1);
         // save second int - weight of node(i)
-        double weight = Double.parseDouble(text.substring(0, text.indexOf(' ')));
+        int weight = Integer.parseInt(text.substring(0, text.indexOf(' ')));
         // slice weight off
         text = text.substring(text.indexOf(' '));
         // add dest to node(j)
@@ -85,7 +85,7 @@ public class SimulatorOne{
 
 
 // Find costs of shortest round paths from each hospital to victim vicsI
-      double[] paths = new double[hospitals.length];
+      int[] paths = new int[hospitals.length];
       for (int k =0; k<hospitals.length;k++){
         if (hospitals[k]==1){
           g.dijkstra(k);
@@ -99,7 +99,7 @@ public class SimulatorOne{
       ArrayList<Integer> bestPaths = new ArrayList<Integer>();
 
       // Save best path
-      double bestPath = g.INFINITY;
+      int bestPath = g.INFINITY;
       for (int l = 0; l<hospitals.length;l++){
         if (hospitals[l]==1){
           if(paths[l]<bestPath)

@@ -20,9 +20,9 @@ class GraphException extends RuntimeException
   class Edge
   {
       public Vertex     dest;   // Second vertex in Edge
-      public double     cost;   // Edge cost
+      public int     cost;   // Edge cost
 
-      public Edge( Vertex d, double c )
+      public Edge( Vertex d, int c )
       {
           dest = d;
           cost = c;
@@ -33,9 +33,9 @@ class GraphException extends RuntimeException
   class Path implements Comparable<Path>
   {
       public Vertex     dest;   // w
-      public double     cost;   // d(w)
+      public int     cost;   // d(w)
 
-      public Path( Vertex d, double c )
+      public Path( Vertex d, int c )
       {
           dest = d;
           cost = c;
@@ -43,7 +43,7 @@ class GraphException extends RuntimeException
 
       public int compareTo( Path rhs )
       {
-          double otherCost = rhs.cost;
+          int otherCost = rhs.cost;
 
           return cost < otherCost ? -1 : cost > otherCost ? 1 : 0;
       }
@@ -54,14 +54,20 @@ class GraphException extends RuntimeException
   {
       public String     name;   // Vertex name
       public List<Edge> adj;    // Adjacent vertices
-      public double     dist;   // Cost
+      public int     dist;   // Cost
       public Vertex     prev;   // Previous vertex on shortest path
       public int        scratch;// Extra variable used in algorithm
-      public boolean          victim;  //Victim #
-    	public boolean       hospital; //Hospital or not
+      public boolean          victim=false;  //Victim #
+    	public boolean       hospital = false; //Hospital or not
+      public boolean ambulance=false;
 			public boolean unique;
       public Hospital hosp;
       public Ambulance ambu;
+      public Victim vic;
+
+      public boolean equals(Vertex other){
+        return this.name.equals(other.name);
+      }
 
       public Vertex( String nm )
         { name = nm; adj = new LinkedList<Edge>( ); reset( ); victim=false;}
@@ -73,17 +79,18 @@ class GraphException extends RuntimeException
      public String toString(){
           return this.name;
        }
+
   }
 
 public class Graph{
 
-  public static final double INFINITY = Double.MAX_VALUE;
+  public static int INFINITY = Integer.MAX_VALUE;
   public Map<String,Vertex> vertexMap = new HashMap<String,Vertex>( );
 
   /**
    * Add a new edge to the graph.
    */
-  public void addEdge( String sourceName, String destName, double cost )
+  public void addEdge( String sourceName, String destName, int cost )
   {
       Vertex v = getVertex( sourceName );
       Vertex w = getVertex( destName );
@@ -94,6 +101,9 @@ public class Graph{
       String vertName = Integer.toString(name);
       (vertexMap.get(vertName)).victim = true;
    }
+
+
+
 
 	 public int edges(){
 		 Collection<Vertex> vees = new ArrayList<Vertex>(vertexMap.size());
@@ -145,7 +155,7 @@ public class Graph{
 				 for( Edge e : v.adj )
 				 {
 						 Vertex w = e.dest;
-						 double cvw = e.cost;
+						 int cvw = e.cost;
 
 						 if( cvw < 0 )
 								 throw new GraphException( "Graph has negative edges" );
@@ -197,7 +207,7 @@ public class Graph{
     * It calls recursive routine to print shortest path to
     * destNode after a shortest path algorithm has run.
     */
-   public void printPath( int dest, int source , double bestPath)
+   public void printPath( int dest, int source , int bestPath)
    {
 		//  System.out.println(bestPath);
          if(dest==source){
@@ -217,7 +227,7 @@ public class Graph{
          if (check){
 				 System.out.println("multiple solutions");
 					 dijkstra(source);
-					 Double path = w.dist;
+					 int path = w.dist;
 					 dijkstra(dest);
 					 path = path+v.dist;
 					 System.out.println("multiple solutions cost "+(int)bestPath);
@@ -278,7 +288,7 @@ public class Graph{
    * after running shortest path algorithm. The path
    * is known to exist.
    */
-	 private void printDestPath( Vertex dest )
+	 public void printDestPath( Vertex dest )
   {
 
       if( dest.prev != null  )
@@ -311,7 +321,7 @@ public class Graph{
    * Initializes the vertex output info prior to running
    * any shortest path algorithm.
    */
-  private void clearAll( )
+  public void clearAll( )
   {
       for( Vertex v : vertexMap.values( ) )
           v.reset( );
@@ -386,8 +396,8 @@ public class Graph{
                for( Edge e : v.adj )
                {
                      Vertex w = e.dest;
-                     double cvw = e.cost;
-                     double newCost = v.dist+cvw;
+                     int cvw = e.cost;
+                     int newCost = v.dist+cvw;
                      // System.out.println(w.name+": "+w.dist+" "+v.name+": "+newCost);
                      // System.out.println(w.name+".victim: "+w.victim+" and "+v.name+".victim: "+v.victim);
 
@@ -441,7 +451,7 @@ public class Graph{
           for( Edge e : v.adj )
           {
               Vertex w = e.dest;
-              double cvw = e.cost;
+              int cvw = e.cost;
 
               if( w.dist > v.dist + cvw )
               {
@@ -489,7 +499,7 @@ public class Graph{
           for( Edge e : v.adj )
           {
               Vertex w = e.dest;
-              double cvw = e.cost;
+              int cvw = e.cost;
 
               if( --w.scratch == 0 )
                   q.add( w );
